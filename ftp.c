@@ -26,7 +26,8 @@ void git_or_die(FILE *conn, int code)
 {
 	if (code < 0)
 	{
-		fprintf(conn, "451 libgit2 error: %s\n", giterr_last()->message);
+		//fprintf(conn, "451 libgit2 error: %s\n", giterr_last()->message);
+		fprintf(conn, "451 libgit2 error: %s\n", git_error_last()->message);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -69,7 +70,7 @@ void ftp_ls(FILE *conn, git_repository *repo, git_tree *tr, git_time_t commit_ti
 		name = git_tree_entry_name(entry);
 		mode = git_tree_entry_filemode(entry);
 
-		if (git_tree_entry_type(entry) == GIT_OBJ_TREE) {
+		if (git_tree_entry_type(entry) == GIT_OBJECT_TREE) {
 			git_tree_lookup(&sub_tr, repo, entry_oid);
 
 			fprintf(conn,
@@ -123,7 +124,7 @@ int git_subtree(git_repository *repo, git_tree *root, const char *path, git_tree
 		return status;
 	entry_oid = git_tree_entry_id(entry);
 
-	if (git_tree_entry_type(entry) != GIT_OBJ_TREE)
+	if (git_tree_entry_type(entry) != GIT_OBJECT_TREE)
 	{
 		git_tree_entry_free(entry);
 		return -1;
